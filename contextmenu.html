@@ -1,0 +1,18 @@
+﻿<div class="settingsHolder">
+    <ul class="settingsMenu" role="menu">
+        <li><a href role="button" ng-click="widget.launchInWebView()" ng-show=widget.settings.isPowerBiReport><i class="icon icon-new-window "></i> Launch In Web View</a></li>
+        <li><a href role="button" ng-show="!widget.IsPartOfFavorite() && !widget.settings.isPowerBiReport" ng-click="widget.addUserFavorites()"><i class="icon icon-favoriteStar"></i> Add to Favorite</a></li>
+        <li><a href role="button" ng-show="widget.ShowForFavorites() && !widget.settings.isPowerBiReport" ng-click="widget.removeUserFavorites()"><i class="icon icon-unFavoriteStar"></i> Remove from Favorite</a></li>
+        <li><a href role="button" ng-hide="widget.settings.isUserCreated" ng-click="widget.launchFeedback()"><i class="icon icon-emoji2"></i> Feedback</a></li>
+        <li><a href role="button" ng-show="widget.settings.isUserCreated" ng-click="widget.removeWidget()"><i class="icon icon-delete"></i> Delete Tile</a></li>
+        <li><a href role="button" ng-click="widget.launchDescription()"><i class="icon icon-details"></i> View Description</a></li>
+        <!--<li class="divider"></li>
+
+        <li><a href><i class="icon icon-fullscreen"></i> Resize</a></li>
+        <li class="resizers">
+            <a href role="button" ng-class="{'active': widget.settings.activeView == 'view1x1', 'disabled': widget.settings.hasView1x1 == false}"><img src="/images/rect1x1.png" /><label>1 X 1</label></a>
+            <a href role="button" ng-class="{'active': widget.settings.activeView == 'view1x2', 'disabled': widget.settings.hasView1x2 == false}"><img src="/images/rect1x2.png" /><label>1 X 2</label></a>
+            <a href role="button" ng-class="{'active': widget.settings.activeView == 'view2x2', 'disabled': widget.settings.hasView2x2 == false}"><img src="/images/rect2x2.png" /><label>2 X 2</label></a>
+        </li>-->
+    </ul>
+</div>

@@ -1,0 +1,49 @@
+﻿<div class="GuidedHelpModal" style="display: block; z-index: 1050;" ng-class="{'alignForSmallScreen':guidedhelp.device.isSmallScreen()}" ng-controller="GuidedHelpController as guidedHelp">
+    <div  class="guidedhelp-header">
+        <div class="guidedhelp-header-left-side-bar">
+            Apportal Assistant
+        </div>
+        <!-- Place arrow image here just like the icon-->
+        <div class="guidedhelp-header-left-side-bar">
+
+        </div>        
+    </div>
+    <div class="col-md-12 col-xs-12 guidedhelp-apportal-assistant">
+        Assistant
+    </div>
+    <div class="col-md-12 col-xs-12">
+        <p class="guidedhelp-sender-chat">
+            Hi,User. I see Its been a week since you have been  here.We have updated the apportal.Would you like to see what we have done?
+        </p>
+    </div>
+    <div class="col-md-12 col-xs-12 guidedhelp-input-container">
+        <div class="col-md-2 col-xs-2 guided-help-alias">
+             [{{ userInfo.upn}}]
+        </div>
+        <div class="col-md-8 col-xs-8">
+            <input type="text" ng-model="chatbox" ng-click="getChatMessage();"  placeholder="Type response"/>
+        </div>
+        <!--<div class="search-header">
+            <div class="col-xs-12 notification-search">
+                 Setting a debounce of 500 milliseconds to avoid filtering of Notifications on every key stroke. 
+                <input type="search" ng-model="notifications.searchText" placeholder="Search">
+                
+            </div>-->
+            <div class="col-md-2 col-xs-2 guidedhelp-enter-label">
+                Enter
+            </div>
+        </div>
+     <div class="col-md-12 col-xs-12 guidedhelp-clear-conversation-label">
+         Clear Conversation
+     </div>
+    <div class="col-md-12 col-xs-12 guided-help-footer">        
+        <div class="guidedhelp-checkbox">
+            <input type="checkbox" class="input-assumpte" id="input-confidencial" />
+            <label for="input-confidencial">Confidencial</label>
+        </div>
+    </div>
+    <div>
+
+    </div>
+
+</div>

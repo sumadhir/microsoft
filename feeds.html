@@ -1,0 +1,135 @@
+﻿<!--<script type="text/javascript" data-app-id="kzY3vhaq8gIxl3fIWpKUg" src="../lib/platform_js_sdk.js"></script>-->
+
+<script src="../core/yammerlib.js"></script>
+
+<win-pivot class="col-xs-12 settings-container">
+    <win-pivot-item header="'Twitter'">
+        <div class="row personalization">
+            <div class="col-xs-12 notification" ng-controller="feedsController">
+                <div header="'New Notification'">
+                    <div class="col-xs-5 notification" style="border:solid 1px gray;">
+
+
+                        Public
+                        <div class="row container" style="margin-top:10px;">
+                            <div class="col-xs-5">
+
+                                <img src="../images/Twitter_logo_blue.png" style="height:40px;width:50px;" />
+                                <input name="searchText" id="searchText" type="text" ng-model="searchText" placeholder="Search" maxlength="50" required />
+                                <span>
+                                    <i class="icon icon-search" ng-click="btnSearchClick();">&nbsp;&nbsp;</i>
+                                    <i class="icon icon-plus" ng-click="btnAddClick();">&nbsp;&nbsp;</i>
+                                </span>
+                                <br />
+
+                                <div style="font-size:small;display:inline;" ng-repeat="item in handles">
+                                    {{item}}
+                                    <i class="icon icon-close">&nbsp;&nbsp;</i>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row container">
+                            <div class="col-xs-4">
+                                <ul>
+                                    <li style="font-size:small" ng-repeat="item in twitterJSON.statuses">{{item.user.screen_name}} : {{item.text}}</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-xs-5 notification" style="border:solid 1px gray;margin-left:20px;">
+                        Private
+                        <div class="row container">
+                            <div class="col-xs-5">
+                                <span ng-click="btnSignInClick();">
+                                    Sign-In <i class="icon icon-account">&nbsp;&nbsp;</i>
+                                </span>
+                                <span ng-click="btnRefreshClick();">
+                                    Refresh <i class="icon icon-refresh">&nbsp;&nbsp;</i>
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="row container">
+                            <div class="col-xs-4">
+                                Followers <span>{{followers}}</span>
+                                Friends <span>{{friends}}</span>
+                                <ul>
+                                    <li style="font-size:small" ng-repeat="item in twitterJSONUSer">{{item.user.screen_name}} : {{item.text}}</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </win-pivot-item>
+    <win-pivot-item header="'Yammer'">
+
+        <div class="row personalization">
+            <div class="col-xs-12 notification" ng-controller="yammerController">
+                <img src="../images/Yammer.png" style="height:40px;width:50px;background-color:deepskyblue;" />
+                <span ng-click="yammerSignInClick();">
+                    Sign-In <i class="icon icon-account">&nbsp;&nbsp;</i>
+                </span>        <div header="'New Notification'">
+                    <div class="col-xs-5 notification" style="border:solid 1px gray;">
+
+
+                        Public
+                        <div class="row container" style="margin-top:10px;">
+                            <div class="col-xs-5">
+
+                                <img src="../images/Yammer.png" style="height:40px;width:50px;" />
+                                <input name="yammerSearchText" id="yammerSearchText" type="text" ng-model="yammerSearchText" placeholder="Search" maxlength="50" required />
+                                <span>
+                                    <i class="icon icon-search" ng-click="btnYammerSearchClick();">&nbsp;&nbsp;</i>
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row container">
+                            <div class="col-xs-4">
+                                <ul>
+                                    <li style="font-size:small" ng-repeat="item in yammerJSON.messages.messages">{{item.sender_id}} : {{item.body.plain}}</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-xs-5 notification" style="border:solid 1px gray;margin-left:20px;">
+                        Private
+
+
+                        <div class="row container">
+                            <div class="col-xs-4">
+
+                                <ul>
+                                    <li style="font-size:small" ng-repeat="item in yammerJSONUser.messages">{{item.sender_id}} : {{item.body.plain}}</li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </win-pivot-item>
+    <!--<win-pivot-item header="'Facebook'"></win-pivot-item>
+    <win-pivot-item header="'Maps'"></win-pivot-item>-->
+</win-pivot>

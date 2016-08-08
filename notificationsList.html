@@ -1,0 +1,155 @@
+﻿<div class="NotificationsModal" style="display: block; z-index: 1050;" ng-class="{'alignForSmallScreen':notifications.device.isSmallScreen()}" ng-controller="NotificationsController as notifications">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body notificationsModal" ng-class="{'previewPaneOpen': notifications.shared.selectedNotificationselectedItem != null}">
+                <div class="notificationArea">
+                    <div class="notification-menu">
+
+                        <div class="pull-right" ng-class="{'setHeightDock': !notifications.device.isWindows()}">
+                            <div class="notification-round" ng-click="notifications.initDock()"  ng-if="notifications.device.isWindows() == true">
+                                <i class="icon icon-close" ng-show="notifications.sharedFactory.notificationDocked"></i>
+                                <i class="icon icon-unpin" ng-hide="notifications.sharedFactory.notificationDocked"></i>
+                            </div>
+                        </div>
+
+                        <!-- Notification Tabs -->
+                        <uib-tabset class="sidebar-tabs pull-left" justified="true">
+                            <uib-tab ng-click="notifications.initNotification()" active="notifications.isNotificationVisible ">
+                                <uib-tab-heading>
+                                    <span>NOTIFICATIONS</span>
+                                </uib-tab-heading>
+                            </uib-tab>
+                            <uib-tab ng-click="notifications.initFilter()" active="notifications.isFilterVisible">
+                                <uib-tab-heading>
+                                    <span>FILTERED</span>
+                                </uib-tab-heading>
+                            </uib-tab>
+                            <uib-tab ng-click="notifications.initArchive()" active="notifications.isArchiveVisible">
+                                <uib-tab-heading>
+                                    <span>ARCHIVED</span>
+                                </uib-tab-heading>
+                            </uib-tab>
+                        </uib-tabset>
+                        <!-- Hiding Search and filter for archived notification-->
+                        <div class="row notification-meta-placeholder">
+                            <div class="search-header">
+                                <div class="col-xs-12 notification-search">
+                                    <!-- Setting a debounce of 500 milliseconds to avoid filtering of Notifications on every key stroke. -->
+                                    <input type="search" ng-model="notifications.searchText" placeholder="Search" ng-model-options="{debounce: 500}">
+                                    <i class="icon icon-search"></i>
+                                </div>
+                                <div class="col-xs-12 sort-list">
+                                    <div class="btn-group" uib-dropdown is-open="notifications.isSortDropDownOpened">
+                                        <button id="single-button" type="button" class="sort-notifications" uib-dropdown-toggle uib-keyboard-nav>
+                                            Sort by: <span class="sort-by">{{notifications.shared.selectedSortOption}} <i class='icon' ng-class="{'icon-chevron-up':notifications.isSortDropDownOpened,'icon-chevron-down' : !notifications.isSortDropDownOpened}"></i></span>
+                                        </button>
+                                        <ul class="sort-selector" uib-dropdown-menu role="menu" aria-labelledby="config_element_dd">
+                                            <li role="menuitem" ng-click="notifications.shared.selectedSortOption='Date Received';notifications.shared.sortOptionChanged()"><a>Date Received</a></li>
+                                            <li role="menuitem" ng-click="notifications.shared.selectedSortOption='Read/Unread';notifications.shared.sortOptionChanged()"><a>Read/Unread</a></li>
+                                            <li role="menuitem" ng-click="notifications.shared.selectedSortOption='Priority';notifications.shared.sortOptionChanged()"><a>Priority</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row notification-details">
+                            <div class="col-xs-12 notification-menu-items">
+                                <div class="col-xs-12 content-rows" ng-repeat="item in notifications.shared.activeItems | filter:notifications.filterNotifications(notifications.searchText) " ng-class="{  'unread': notifications.ifUnread(item), 'active': item.message.messageId == notifications.shared.selectedNotification.message.messageId}">
+                                    <div class="row notification-row" ng-class="{'active': item.message.messageId == notifications.shared.selectedNotification.message.messageId}">
+                                        <div class="status-icons">
+                                            <div class="left-icon" ng-click="notifications.clickItem(item)">
+                                                <span class="lbl-flag">
+                                                    <img src="/images/icon/Actionable Notification.png" class="" ng-if="item.message.isActionable" />
+                                                </span>
+                                            </div>
+                                            <div class="left-icon" ng-click="notifications.clickItem(item)">
+                                                <i class="icon icon-info isHighPriority" ng-if="item.message.priorityId == 1"></i>
+                                                <img class="img-lowImportance" src="/images/icon/Low importance.png" ng-if="item.message.priorityId ==3"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="row" ng-click="notifications.clickItem(item)">
+                                                <div class="col-xs-10">
+                                                    <p class="message-title">{{item.message.messageTitle}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row" ng-click="notifications.clickItem(item)">
+                                                <div class="col-xs-10">
+                                                    <p class="message-shortContent" ng-class="{  'message-shortContent-unread': notifications.ifUnread(item),'unread-active':  item.message.messageId == notifications.shared.selectedNotification.message.messageId && notifications.ifUnread(item),'message-shortContent-active': item.message.messageId == notifications.shared.selectedNotification.message.messageId}">{{item.message.shortMessage}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="time-details">
+                                                        <span class="time-info">{{notifications.shared.calcAge(item)}}</span>
+                                                    </div>
+                                                    <button type="button" class="more-info" ng-class="{'panel-open': item.isCollapsed}" ng-click="notifications.showRhideNotifyItem(item)"><span class="sort-by"><i class='icon icon-dots-horizontal'></i></span></button>
+                                                    <div uib-collapse="!item.isCollapsed">
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="col-sx-12 ctrl-btns" ng-if="!notifications.isArchiveVisible">
+                                                                    <button ng-if="!notifications.ifUnread(item)" class="col-xs-4 notification-actions" ng-click="notifications.shared.updateMessageStatus(item, 2)">
+                                                                        <div class="icon-container action-icon">
+                                                                            <i class="icon icon-email"></i>
+                                                                        </div>
+                                                                        <!--<div class="label" ng-if="notifications.ifUnread(item)">Mark Read</div>-->
+                                                                        <div class="label" ng-if="!notifications.ifUnread(item)">Mark Unread</div>
+                                                                    </button>
+                                                                    <button class="col-xs-4 notification-actions" ng-click="notifications.hideDelegateUi(item, false)">
+                                                                        <div class="icon-container action-icon">
+                                                                            <img class="img-delegate" src="/images/icon/Delegate.png" />
+                                                                        </div>
+                                                                        <div class="label">Delegate</div>
+                                                                    </button>
+                                                                    <button class="col-xs-4 notification-actions" ng-if="!notifications.isArchiveVisible" ng-click="notifications.shared.updateMessageStatus(item, 4)">
+                                                                        <div class="icon-container action-icon"><i class="icon icon-archive"></i></div>
+                                                                        <div class="label">Archive</div>
+                                                                    </button>
+                                                                    <button class="col-xs-4 notification-actions" ng-if="notifications.isArchiveVisible" ng-click="notifications.shared.updateMessageStatus(item, 3)">
+                                                                        <div class="icon-container action-icon"><i class="icon icon-folder-move"></i></div>
+                                                                        <div class="label">Restore</div>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="col-sx-12 ctrl-btns" ng-if="notifications.isArchiveVisible">
+                                                                    <button class="col-xs-3 notification-actions" ng-click="notifications.shared.updateMessageStatus(item, 3)">
+                                                                        <div class="icon-container action-icon"><i class="icon icon-folder-move"></i></div>
+                                                                        <div class="label">Restore</div>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="delegate-message" ng-if="!item.isDelegateUiHidden">
+                                                                    <div ng-if="!item.isDelegationSuccessful">
+                                                                        <span>
+                                                                            <input type="text" class="alias-input" placeholder="alias" ng-model="item.delegateAlias" />
+                                                                        </span>
+                                                                        <span>
+                                                                            <button class="icon-container" ng-click="notifications.shared.delegateMessage(item, item.delegateAlias)"><i class="icon icon-check"></i></button>
+                                                                        </span>
+                                                                        <span>
+                                                                            <button class="icon-container" ng-click="notifications.shared.resetDelegate(item)"><i class="icon icon-close"></i></button>
+                                                                        </span>
+                                                                        <span class="error-text" ng-show="(item.delegateErrorMessage && item.delegateErrorMessage != '')"> {{ item.delegateErrorMessage }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div ng-show="item.delegateSuccessMessage && item.delegateSuccessMessage != ''">
+                                                                    <span class="success-text"> {{ item.delegateSuccessMessage }} </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

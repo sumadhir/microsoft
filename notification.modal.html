@@ -1,0 +1,249 @@
+﻿<div class="modal-body notificationsModal" ng-class="{'previewPaneOpen': notifications.selectedItem != null}">
+    <div class="notificationArea">
+        <div class="notification-menu">
+
+            <div class="pull-right">
+                <div class="notification-round" ng-click="notifications.initDock()">
+                    <i class="icon icon-pin" ng-show="notifications.isDock"></i>
+                    <i class="icon icon-unpin" ng-hide="notifications.isDock"></i>
+                </div>
+            </div>
+
+            <!-- Notification Tabs -->
+            <uib-tabset class="sidebar-tabs pull-left" justified="true">
+                <uib-tab ng-click="notifications.initNotification()" active="notifications.isNotificationVisible ">
+                    <uib-tab-heading>
+                        <span>NOTIFICATIONS</span>
+                    </uib-tab-heading>
+                </uib-tab>
+                <uib-tab ng-click="notifications.initFilter()" active="notifications.isFilterVisible">
+                    <uib-tab-heading>
+                        <span>FILTERED</span>
+                    </uib-tab-heading>
+                </uib-tab>
+                <uib-tab ng-click="notifications.initArchive()" active="notifications.isArchiveVisible">
+                    <uib-tab-heading>
+                        <span>ARCHIVED</span>
+                    </uib-tab-heading>
+                </uib-tab>
+            </uib-tabset>
+
+
+            <!--<div class="row notification-menu-title">
+                <div class="col-xs-12 notification-header">
+                    <span class="title">NOTIFICATIONS</span>
+                    <span class="view-archive" ng-click="notifications.initArchive()">View Archived</span>
+                    <span class="view-archive" ng-click="notifications.initFilter()">View Filtered</span>
+                    <div class="icon-container closeModal pull-right" ng-click="notifications.cancel()">
+                        <i class="icon icon-close"></i>
+                    </div>
+                </div>
+            </div>-->
+            <!--Use the below containers for displaying the notifications-->
+            <!--<div class="notification-panel">
+                <div class="alert alert-success fade in">
+                    <a href="#" class="close icon icon-close" data-dismiss="alert"></a>
+                    <strong>Success!</strong> Your was successfully archived.
+                </div>
+                <div class="alert alert-error fade in">
+                    <a href="#" class="close icon icon-close" data-dismiss="alert"></a>
+                    <strong>Error!</strong> There was a problem with your network connection.
+                </div>
+            </div>-->
+            <!-- Hiding Search and filter for archived notification-->
+            <div class="row notification-meta-placeholder">
+                <div class="search-header">
+                    <div class="col-xs-12 notification-search">
+                        <!-- Setting a debounce of 500 milliseconds to avoid filtering of Notifications on every key stroke. -->
+                        <input type="search" ng-model="notifications.searchText" placeholder="Search" ng-model-options="{debounce: 500}">
+                        <i class="icon icon-search"></i>
+                    </div>
+                    <div class="col-xs-12 sort-list">
+                        <div class="btn-group" uib-dropdown is-open="notifications.isSortDropDownOpened">
+                            <button id="single-button" type="button" class="sort-notifications" uib-dropdown-toggle uib-keyboard-nav>
+                                Sort by: <span class="sort-by">{{notifications.selectedSortOption}} <i class='icon' ng-class="{'icon-chevron-up':notifications.isSortDropDownOpened,'icon-chevron-down' : !notifications.isSortDropDownOpened}"></i></span>
+                            </button>
+                            <ul class="sort-selector" uib-dropdown-menu role="menu" aria-labelledby="config_element_dd">
+                                <li role="menuitem" ng-click="notifications.selectedSortOption='Date Received';notifications.sortOptionChanged()"><a>Date Received</a></li>
+                                <li role="menuitem" ng-click="notifications.selectedSortOption='Read/Unread';notifications.sortOptionChanged()"><a>Read/Unread</a></li>
+                                <li role="menuitem" ng-click="notifications.selectedSortOption='Priority';notifications.sortOptionChanged()"><a>Priority</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row notification-details">
+                <div class="col-xs-12 notification-menu-items">
+                    <div class="col-xs-12 content-rows" ng-repeat="item in notifications.activeItems | filter:notifications.filterNotifications(notifications.searchText) " ng-class="{  'unread': notifications.ifUnread(item), 'active': item.message.messageId == notifications.selectedItem.message.messageId}">
+                        <div class="row notification-row" ng-class="{'active': item.message.messageId == notifications.selectedItem.message.messageId}">
+                            <div class="status-icons">
+                                <div class="left-icon" ng-click="notifications.selectItem(item)">
+                                    <span class="lbl-flag">
+                                        <img src="/images/icon/Actionable Notification.png" class="" ng-if="item.message.isActionable" />
+                                    </span>
+                                </div>
+                                <div class="left-icon" ng-click="notifications.selectItem(item)">
+                                    <i class="icon icon-info isHighPriority" ng-if="notifications.isHighPrioity(item)"></i>
+                                    <img class="img-lowImportance" src="/images/icon/Low importance.png" ng-if="notifications.isLowPrioity(item)"></i>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="row" ng-click="notifications.selectItem(item)">
+                                    <div class="col-xs-10">
+                                        <p class="message-title">{{item.message.messageTitle}}</p>
+                                    </div>
+                                </div>
+                                <div class="row" ng-click="notifications.selectItem(item)">
+                                    <div class="col-xs-10">
+                                        <p class="message-shortContent" ng-class="{  'message-shortContent-unread': notifications.ifUnread(item),'unread-active':  item.message.messageId == notifications.selectedItem.message.messageId && notifications.ifUnread(item),'message-shortContent-active': item.message.messageId == notifications.selectedItem.message.messageId}">{{item.message.shortMessage}}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="time-details">
+                                            <span class="time-info">{{notifications.timeLapsed(item.message.createdOn)}}</span>
+                                        </div>
+                                        <button type="button" class="more-info" ng-class="{'panel-open': isCollapsed}" ng-click="isCollapsed = !isCollapsed"><span class="sort-by"><i class='icon icon-dots-horizontal'></i></span></button>
+                                        <div uib-collapse="!isCollapsed">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="col-sx-12 ctrl-btns" ng-class="{'hideDiv': notifications.isDetailMessageArchive}">
+                                                        <button ng-if="!notifications.ifUnread(item)" class="col-xs-4 notification-actions" ng-click="notifications.updateMessageStatus(item, 2)">
+                                                            <div class="icon-container action-icon">
+                                                                <i class="icon icon-email"></i>
+                                                            </div>
+                                                            <!--<div class="label" ng-if="notifications.ifUnread(item)">Mark Read</div>-->
+                                                            <div class="label" ng-if="!notifications.ifUnread(item)">Mark Unread</div>
+                                                        </button>
+                                                        <button class="col-xs-4 notification-actions" ng-click="notifications.hideDelegateUi(item, false)">
+                                                            <div class="icon-container action-icon">
+                                                                <img class="img-delegate" src="/images/icon/Delegate.png" />
+                                                            </div>
+                                                            <div class="label">Delegate</div>
+                                                        </button>
+                                                        <button class="col-xs-4 notification-actions" ng-if="!notifications.isArchiveVisible" ng-click="notifications.updateMessageStatus(item, 4)">
+                                                            <div class="icon-container action-icon"><i class="icon icon-archive"></i></div>
+                                                            <div class="label">Archive</div>
+                                                        </button>
+                                                        <button class="col-xs-4 notification-actions" ng-if="notifications.isArchiveVisible" ng-click="notifications.updateMessageStatus(item, 3)">
+                                                            <div class="icon-container action-icon"><i class="icon icon-folder-move"></i></div>
+                                                            <div class="label">Restore</div>
+                                                        </button>
+                                                        <!--<button class="col-xs-3 notification-actions" ng-click="notifications.updateMessageStatus(item, 4)">
+                                                            <div class="icon-container action-icon">
+                                                                <!--<i ng-if="notifications.isFilterVisible" class="icon icon-check"></i>-->
+                                                        <!--<i ng-if="!(notifications.isArchiveVisible ||notifications.isFilterVisible)" class="icon icon-cancel"></i>
+                                                            </div>
+                                                            <!--<div class="label" ng-if="notifications.isFilterVisible">Opt In</div>
+                                                            <div class="label" ng-if="!(notifications.isArchiveVisible ||notifications.isFilterVisible)">Opt Out</div>
+                                                        </button>-->
+                                                    </div>
+                                                    <div class="col-sx-12 ctrl-btns" ng-class="{'hideDiv': !notifications.isDetailMessageArchive}">
+                                                        <button class="col-xs-3 notification-actions" ng-click="notifications.updateMessageStatus(item, 3)">
+                                                            <div class="icon-container action-icon"><i class="icon icon-folder-move"></i></div>
+                                                            <div class="label">Restore</div>
+                                                        </button>
+                                                        <!--<div class="time-details">
+                                                            <span class="time-info"><i class="icon icon-glyph-411"></i>{{notifications.timeLapsed(notifications.selectedItem.message.createdOn)}}</span>
+                                                        </div>-->
+                                                    </div>
+                                                    <div class="delegate-message" ng-class="{'hideDiv': item.isDelegateUiHidden}">
+                                                        <div ng-class="{'hideDiv': item.isDelegationSuccessful}">
+                                                            <!--<div class="icon-container"><i class="icon icon-arrow-right"></i></div>-->
+                                                            <span>
+                                                                <input type="text" class="alias-input" placeholder="alias" ng-model="item.delegateAlias" />
+                                                            </span>
+                                                            <span>
+                                                                <button class="icon-container" ng-click="notifications.delegateMessage(item)"><i class="icon icon-check"></i></button>
+                                                            </span>
+                                                            <span>
+                                                                <button class="icon-container" ng-click="notifications.hideDelegateUi(item, true)"><i class="icon icon-close"></i></button>
+                                                            </span>
+                                                            <span class="error-text" ng-show="item.isDelegationFailed"> {{ item.delegationErrorMessage }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div ng-class="{'hideDiv': !item.isDelegationSuccessful}">
+                                                        <span class="success-text"> {{ notifications.delegationSuccessMessage }} </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="notification-contents open" ng-if="notifications.selectedItem != null" id="notificationDetailedView">
+            <div ng-if="!notifications.isUrl()" class="archive-details">
+                <div class="col-xs-12 padding0">
+                    <div class="col-xs-12 navigation-header">
+                        <div class="notification-title">
+                            <i class="icon icon-info isHighPriority" ng-if="notifications.isHighPrioity(notifications.selectedItem)"></i>
+                            <i class="icon icon-arrow-down isLowPriority" ng-if="notifications.isLowPrioity(notifications.selectedItem)"></i>
+                            <span>{{notifications.selectedItem.message.messageTitle}}</span>
+                        </div>
+                        <div class="right-navigation pull-right">
+                            <div class="icon-container" ng-disabled="!notifications.doesPrevMessageExists" ng-click="notifications.goToMessage('prev')"><i class="icon icon-arrow-up"></i></div>
+                            <div class="icon-container next" ng-disabled="!notifications.doesNextMessageExists" ng-click="notifications.goToMessage('next')"><i class="icon icon-arrow-down"></i></div>
+                            <div class="icon-container" ng-click="notifications.clearSelection()"><i class="icon icon-close"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 padding0">
+                    <div class="col-xs-12 archive-controls" ng-class="{'hideDiv': notifications.isDetailMessageArchive}">
+                        <div class="left-btns" ng-class="{'hideDiv': notifications.selectedDelegateVisible}">
+                            <div ng-show="notifications.showUnreadIcon" class="icon-container" ng-click="notifications.updateMessageStatus(notifications.selectedItem, 2)"><i class="icon icon-email"></i></div>
+                            <div class="icon-container img-delegate" ng-click="notifications.showSelectedDelegateUi(notifications.selectedItem, true)"><img src="/images/icon/Delegate_Black.png" /></div>
+                            <div class="icon-container" ng-click="notifications.updateMessageStatus(notifications.selectedItem, 4)"><i class="icon icon-delete"></i></div>
+                        </div>
+                        <div class="delegate-message" ng-class="{'hideDiv': !notifications.selectedDelegateVisible}">
+                                <input type="text" class="alias-input" placeholder="alias" ng-model="notifications.selectedItem.delegateAlias" />
+                                <div class="icon-container" ng-click="notifications.delegateMessage(notifications.selectedItem, true)"><i class="icon icon-check"></i></div>
+                                <div class="icon-container" ng-click="notifications.showSelectedDelegateUi(notifications.selectedItem, false)"><i class="icon icon-close"></i></div>
+                                <span class="error-text" ng-show="notifications.selectedItem.isDelegationFailed"> {{ notifications.selectedItem.delegationErrorMessage }}</span>
+                        </div>
+                        <div class="time-details">
+                            <span class="time-info"><i class="icon icon-glyph-411"></i>{{notifications.timeLapsed(notifications.selectedItem.message.createdOn)}}</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 archive-controls" ng-class="{'hideDiv': !notifications.isDetailMessageArchive}">
+                        <div class="left-btns">
+                            <div class="icon-container" ng-click="notifications.updateMessageStatus(notifications.selectedItem, 3)"><i class="icon icon-folder-move"></i></div>
+                            <span class="restore-text">Restore</span>
+                        </div>
+                        <div class="time-details">
+                            <span class="time-info"><i class="icon icon-glyph-411"></i>{{notifications.timeLapsed(notifications.selectedItem.message.createdOn)}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 padding0 notification-meta">
+                    <div ng-class="{'hideDiv': notifications.selectedDelegateVisible || (notifications.selectedItem && !notifications.selectedItem.isDelegationSuccessful)}">
+                        <span class="success-text"> {{ notifications.delegationSuccessMessage }} </span>
+                    </div>
+                    <div class="pull-left sender-name">
+                        <label>Sender: </label>{{notifications.PublisherName}}
+                    </div>
+                    <div class="pull-left tag-name">
+                        <label>Tag: </label>{{notifications.TagName}}
+                    </div><div class="clearfix"></div>
+                    <p class="notification-shortmessage">{{notifications.selectedItem.message.shortMessage}}</p>
+                    <hr />
+                    <pre ng-if="notifications.device.isWindows() == false" class="notificationbody" ng-csp ng-bind-html="notifications.trustedContent(notifications.selectedItem.message.messageContent)" ng-click="notifications.openWebView($event)"></pre>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div webview show-action-bar="notifications.isUrl()" hide-header="false" webview-id="'notificationWebview'" has-close-button="true" close-action="notifications.clearSelection()"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿<div class="modal-body">
+    <div class="feedbackPane">
+        <div class="feedbackContainer">
+            <div class="row">
+                <label class="title">feedback</label>
+                <div class="icon-container feedbackClose pull-right" ng-click="feedback.cancel()">
+                    <i class="icon icon-close"></i>
+                </div>
+            </div>
+            <form>
+                <div class="form-group" ng-if="feedback.context.isFeedbackForTile">
+                    <label class="feedbackFormLabel" for="feedbackContextName">Tile Name</label>
+                    <p class="bold500">{{feedback.context.tileName}}</p>
+                </div>
+                <div class="form-group" ng-if="feedback.context.isFeedbackForTile">
+                    <label class="feedbackFormLabel" for="feedbackContextName">Tile Description</label>
+                    <p class="multiLineText">
+                        <multi-line-ellipsis char-length="280" text="feedback.context.description"></multi-line-ellipsis>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label class="feedbackFormLabel" for="feedbackRating">Rating</label>
+                    <win-rating max-rating="feedback.context.maxRating" user-rating="feedback.context.rating" id="feedbackRating"></win-rating>
+                    <p class="reqdField" ng-show="feedback.ratingRequired"><span class="red">*</span> Rating is a required field.</p>
+                </div>
+                <div class="form-group">
+                    <label class="feedbackFormLabel" for="feedbackComments">Comments</label>
+                    <textarea class="form-control feedbackComments" id="feedbackComments" ng-model="feedback.context.comments"></textarea>
+                    <p class="reqdField" ng-show="feedback.commentRequired"><span class="red">*</span> Comments is a required field.</p>
+                </div>
+                <button type="button" class="btn btn-primary" ng-click="feedback.submit()">Submit</button>
+                <button type="button" class="btn" ng-click="feedback.cancel()">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>

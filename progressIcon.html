@@ -1,0 +1,4 @@
+﻿<span class="progress-icon">
+    <progress class="win-ring progress-small enter-content green" ng-if="isBusy"></progress>
+    <button class="btn btn-icon" type="button" ng-class="{'disabled' : disabled}" ng-click="executeAction($event)" ng-if="!isBusy"><i class="icon icon-{{icon}}"></i></button>
+</span>

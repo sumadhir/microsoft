@@ -1,0 +1,58 @@
+﻿<div  ng-controller="HomePageController">
+
+
+<span style="padding: 10px;border: solid 1px #eee;"><a href="#Settings" style="color:888">Settings</a></span>
+<span style="padding: 10px;border: solid 1px #3399ff;background:#3399ff;color:white">Config</span>
+
+ <div class="container-fluid demoMargin"> 
+                    <br /> 
+<!--8 Grid System started -->
+                     <div class="col-md-12" style="width:88%;">
+                     <p style="float:left;color:red;margin-left:10px">Drag Your Application Priority</p>
+                     <button type="text"  id="viewlargesmall" ng-click="saveClick()"  style="float: right; margin-right: 0%; margin-top: 6px;color:#3399ff">Save</button>
+                     </div>
+
+                     <div class="advancedDemo">
+        <div class="dropzone">
+                <div class="container-element box box-blue" style="margin-top: 3%">
+                          
+              <ul class="col-md-12"  dnd-list="PolarisAppsResponsePayload1"
+                dnd-allowed-types="['itemType']"
+                dnd-horizontal-list="true"
+                dnd-external-sources="true"
+                dnd-dragover="dragoverCallback(event, index, external, type)"
+                dnd-drop="dropCallback(event, index, item, external, type, 'itemType')"
+                dnd-inserted="logEvent('Element was inserted at position ' + index, event)">
+               
+            <li class="col-md-3 marginBottom4px" ng-repeat= "data in PolarisAppsResponsePayload1"
+                                                  dnd-draggable="data"
+                                       dnd-type="'itemType'"
+                    dnd-effect-allowed="copyMove"
+                    dnd-dragstart="logEvent('Started to drag an item', event)"
+                    dnd-moved="PolarisAppsResponsePayload1.splice($index, 1); logEvent('Item moved', event)"
+                    dnd-copied="logEvent('Item copied', event)"
+                    dnd-canceled="logEvent('Drag operation canceled', event)"
+                    dnd-dragend="logEvent('Drag operation ended', event)">
+
+                <div class="demo-content" ng-click="openLink(data.url)" style="background-image:url('{{data.image_path}}');background-size: 100% 83%;">
+                <div class="gridTileHeader">
+                <div class="left">
+                {{data.apps_name}}
+                </div>
+                <div class="right">   
+                <a href="#"  ng-click="remove('Config',data)">x</a>
+                </div>
+                </div>
+                 <div class="gridTileFooter">
+                Searches So Far:{{data.all_execution_count }}
+                </div></div>
+            </li>
+                </ul>
+                </div>
+                </div>
+</div>
+
+</div>
+
+</div>
+ 

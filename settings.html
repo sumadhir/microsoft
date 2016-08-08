@@ -1,0 +1,489 @@
+﻿<div>
+    <win-pivot class="col-xs-12 settings-container padding0" ng-click="app.closeAllSideBars();OnpivotItemClick()" >
+        <win-pivot-item header="'Personalization'">
+            <!--Removed the ng-controller attribute below as this was causing an additional settingsController load which was causing the on load event to fire twice and cause promise clashes-->
+            <div class="row personalization">
+                <div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+                    <div class="selectContainer col-xs-12 pad-top-0">
+                        <label>Select Region</label>
+                        <select autofocus class="selectStyle" ng-model="settings.selectedProfileArea" ng-options="taxonomy.name for taxonomy in settings.profileAreas | orderBy:'name'" ng-change="profileAreaChanged()"></select>
+                        <span style="color:red" ng-show="settings.selectedProfileArea==null">Please Select Region!</span>
+                    </div>
+                    <div class="selectContainer col-xs-12">
+                        <label>Select Category</label>
+                        <select class="selectStyle" ng-model="settings.selectedProfileGroup" ng-options="profileGroup.categoryName for profileGroup in settings.profileGroups" ng-change="profileGroupChanged()"></select>
+                    </div>
+                    <div class="selectContainer col-xs-12">
+                        <label>Select Profile</label>
+                        <select class="selectStyle" ng-disabled="settings.isProfileDropDownDisabled()" ng-model="settings.selectedUserProfile" ng-options="userProfiles.displayName for userProfiles in settings.filteredUserProfiles | orderBy:'displayName'"></select>
+                    </div>
+
+                    <div class="col-xs-12 setDefaultCheckContainer">
+                        <input type="checkbox" id="setAsDefaultCheckBox" ng-model="settings.isDefaultChecked">
+                        <label class="setDefaultCheckContainerLabel" for="setAsDefaultCheckBox"> Set as Default </label><br>
+                    </div>
+                </div>
+                <div class="footer-content personalization-btns">
+                    <footer>
+                        <div class="footer-item">
+                            <button type="button" class="button" ng-click="btnSelectClick();app.showSettings = false;">
+                                <span class="icon icon-check"></span>Accept
+                            </button>
+                        </div>
+                        <div class="footer-item">
+                            <button type="button" class="button" ng-click="cancelClick();app.showSettings = false;" go-to="home">
+                                <span class="icon icon-close"></span>Cancel
+                            </button>
+                        </div>
+                        <div class="footer-item" ng-show="app.device.isWindows()==true">
+                            <button type="button" class="button" ng-click="btnClearAllCachedData()">
+                                <span class="icon icon-clear"></span>Clear All Cached Data
+                            </button>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </win-pivot-item>
+        <win-pivot-item header="'Notification Filter'" ng-if="settings.deviceFactory.isWindows()">
+            <!--Removed the ng-controller attribute below as this was causing an additional settingsController load which was causing the on load event to fire twice and cause promise clashes-->
+            <div class="personalization">
+                <p>By default all notifications are allowed for the user. Any changes below would reflect on the next launch of application.</p>
+                <div class="col-xs-12 edit-notification-filter">
+                    <form name="frmEditSubscription" class="form-horizontal pad-top-15" ng-init="onEditViewLoad()">
+                        <div class="form-group">
+
+                        </div>
+                        <div class="edit-filter">
+                            <div class="filter-header">
+                                <div class="row">
+                                    <div class="col-xs-4"><label>SENDER</label></div>
+                                    <div class="col-xs-4"><label>TAG </label></div>
+                                    <div class="col-xs-2"><label>BLOCKED</label></div>
+                                </div>
+                            </div>
+                            <div class="filter-list">
+                                <div class="row" ng-repeat="subscription in subscriptions track by $index">
+                                    <div ng-init="sender_control_name = 'sender' + $index" />
+                                    <div ng-init="tag_control_name = 'tag' + $index" />
+                                    <div class="col-xs-4">
+                                        <select class="form-control" name="{{sender_control_name}}" ng-model="subscription.selectedPublisher" ng-options="publisher.PublisherName for publisher in subscription.publishers" ng-change="senderChanged(subscription.selectedPublisher)" required />
+                                        <ng-messages for="frmEditSubscription[sender_control_name].$error" ng-if="subscription.selectedPublisher==''&&formInvalid">
+                                            <ng-message when="required" class="error">Sender is required</ng-message>
+                                        </ng-messages>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <select class="form-control" name="{{tag_control_name}}" ng-model="subscription.selectedTag" ng-options="tag.TagName for tag in subscription.tags" required />
+                                        <ng-messages for="frmEditSubscription[tag_control_name].$error" ng-if="subscription.selectedTag==''&&formInvalid">
+                                            <ng-message when="required" class="error">Tag is required</ng-message>
+                                        </ng-messages>
+                                    </div>
+                                    <div class="col-xs-2 col-sm-1 default-blocked">
+                                        <label class="fontweight-min" name="Blocked">{{Blocked}}</label>
+                                    </div>
+                                    <div class="col-xs-2 col-sm-1">
+                                        <div class="icon-container deleteFilter" ng-click="deleteUnSubscription(subscription)">
+                                            <i class="icon-container-screen icon icon-delete"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="error" ng-show="duplicateUnsubscriptionSelected"><br />Duplicate Sender Tag selected.</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="footer-content">
+                    <footer>
+                        <div class="footer-item">
+                            <span ng-click="addUnsubscriptionForUser()"><span class="icon-container"><i class="icon-container-footer icon icon-plus"></i></span><span class="icon-text">ADD NEW FILTER</span></span>
+                        </div>
+                        <div class="footer-item">
+                            <span ng-click="saveUnsubscription()"> <span class="icon-container"><i class="icon-container-footer icon icon-save"></i> </span> <span class="icon-text"> SAVE </span> </span>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </win-pivot-item>
+        <!--<win-pivot-item header="'Privacy statement'">
+            <web-view privacy-Url="privacyStatementURL" ng-model="privacyStatementURL"></web-view>
+        </win-pivot-item>-->
+        <win-pivot-item header="'About'">
+            <!--Removed the ng-controller attribute below as this was causing an additional settingsController load which was causing the on load event to fire twice and cause promise clashes-->
+            <div class="about" ng-init="settings.AboutViewLoad()">
+                <h2>Microsoft Apportal</h2>
+                <p class="publisher" style="margin-left:4.5px;margin-top:0px;">By Microsoft Corporation</p>
+                <p class="version" style="margin-left:4.5px;margin-top:0px;">Version {{settings.packageVersion}}</p>
+                <br />
+                <p style="margin-left:3.5px;margin-top:0.5px;">
+                    Built on Windows 10, Microsoft Apportal is a role based, connected experience that is designed around how YOU work. Regardless if you are in Sales, Marketing, HR, Field Leadership or other role, Microsoft Apportal will provide a central point of access to all the applications, reports and resources you need, specific to your role and the most common daily tasks, all in a modern Windows 10 experience.
+                </p>
+                <a href="{{settings.supportUrl}}" style="margin-left:4.5px;margin-top:10px;">Support</a>
+                <br />
+                <a href="{{settings.privacyStatementUrl}}" style="margin-left:4.5px;">Privacy Statement</a>
+                <br />
+                <p style="margin-left:4.5px;margin-top:10px;">
+                    Copyright © 2016 Microsoft Corporation. All rights reserved.
+                </p>
+                <hr />
+                <h2 class="small">Third-party software acknowledgements</h2>
+                <p style="margin-left:0px;">
+                    The software is based on or incorporates material from the projects listed below
+                    (collectively, "Third Party Code"). Please Note:Â  Microsoft is not the original
+                    author of the Third Party Code. The original copyright notice and the license
+                    under which Microsoft received the Third Party Code, are set forth below.
+                    Licenses and notices are provided for informational purposes only. Microsoft,
+                    not the third party, licenses the Third Party Code to you under the terms set
+                    forth in the license agreement or terms of use for the Microsoft product.
+                    Microsoft reserves all other rights not expressly granted under this agreement,
+                    whether by implication, estoppel or otherwise.
+                </p>
+                <ul class="software-list" style="list-style:disc;padding:10px;">
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from jQuery & (UI)</h5>
+                        <p class="settingAboutMargin">
+                            Copyright 2013 jQuery Foundation and other contributors
+                        </p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining
+                            a copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished
+                            to do so, subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The copyright notice and this permission notice shall be included
+                            in all copies or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://jquery.org/license/">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Angular & (animate,gridster,route,sanitize,touch,ui-router,winjs, slick,messages)</h5>
+                        <p class="settingAboutMargin">
+                            Copyright (c) 2010-2015 Google, Inc. http://angularjs.org
+                        </p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a copy
+                            of this software and associated documentation files (the "Software"), to deal
+                            in the Software without restriction, including without limitation the rights
+                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is
+                            furnished to do so, subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in
+                            all copies or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+                            THE SOFTWARE.
+
+
+                        </p>
+                        <a class="settingAboutMargin" href="https://angularjs.org/">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Underscore</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/jashkenas/underscore/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Require</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2010-2015, The Dojo Foundation</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/jrburke/requirejs/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Gulp</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2013-2016 Fractal <contact@wearefractal.com></p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/gulpjs/gulp/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Bower</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2016 Twitter and other contributors</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/bower/bower/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Ngprogress</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2013-2014 Rico Sta. Cruz</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/rstacruz/nprogress/blob/master/License.md">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Ngstorage</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2015 Gias Kay Lee</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/gsklee/ngStorage/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Adal and (Adal-Angular)</h5>
+                        <p class="settingAboutMargin">Licensed under the Apache License, Version 2.0 (the "License")</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="http://www.apache.org/licenses/LICENSE-2.0">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Aes</h5>
+                        <p class="settingAboutMargin">(c) 2009-2013 by Jeff Mott. All rights reserved</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a
+                            copy of this software and associated documentation files (the "Software"),
+                            to deal in the Software without restriction, including without limitation the
+                            rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all copies
+                            or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                            PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+                            FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+                            IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://code.google.com/archive/p/crypto-js/wikis/License.wiki">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from Bootstrap</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2012-2016 the AngularUI Team</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a copy
+                            of this software and associated documentation files (the "Software"), to deal
+                            in the Software without restriction, including without limitation the rights
+                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+                            copies of the Software, and to permit persons to whom the Software is
+                            furnished to do so, subject to the following conditions:
+
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in
+                            all copies or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+                            THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/angular-ui/bootstrap/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from ng-file-upload</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2013 danialfarid</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of
+                            this software and associated documentation files (the "Software"), to deal in
+                            the Software without restriction, including without limitation the rights to
+                            use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+                            the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all
+                            copies or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+                            FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+                            COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+                            IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+                            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/danialfarid/ng-file-upload/blob/master/LICENSE">Link to License</a>
+                    </li>
+                    <li>
+                        <h5>Microsoft Apportal Application uses materials from ng-csv</h5>
+                        <p class="settingAboutMargin">Copyright (c) 2013 Asaf David</p>
+                        <p class="settingAboutMargin">
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of
+                            this software and associated documentation files (the "Software"), to deal in
+                            the Software without restriction, including without limitation the rights to
+                            use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+                            the Software, and to permit persons to whom the Software is furnished to do so,
+                            subject to the following conditions:
+                        </p>
+                        <p class="settingAboutMargin">
+                            The above copyright notice and this permission notice shall be included in all
+                            copies or substantial portions of the Software.
+                        </p>
+                        <p class="settingAboutMargin">
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+                            FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+                            COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+                            IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+                            CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        </p>
+                        <a class="settingAboutMargin" href="https://github.com/asafdav/ng-csv/blob/master/LICENSE">Link to License</a>
+                    </li>
+                </ul>
+
+            </div>
+        </win-pivot-item>
+        <win-pivot-item header="'Help'">
+            <div class="col-xs-12 helpContainer">
+                <p>
+                    <ul>
+                        <li ng-repeat="urlTaxonomy in ::settings.urlTaxonomies">
+                            <a href="{{urlTaxonomy.URL}}" title="{{urlTaxonomy.description}}">{{urlTaxonomy.linkText}}</a>
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </win-pivot-item>
+    </win-pivot>
+</div>

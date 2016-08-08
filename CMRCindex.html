@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+  <script src="node_modules/todomvc-common/base.js"></script>
+ 		<script src="node_modules/react/dist/react-with-addons.js"></script>
++		<script src="node_modules/classnames/index.js"></script>
+ 		<script src="node_modules/react/dist/JSXTransformer.js"></script>
+ 		<script src="node_modules/director/build/director.js"></script>
+		    <script src="~/Scripts/Grid/csv.js"></script>
+    <script src="~/Scripts/Grid/vfs_fonts.js"></script>
+	<script src="http://www.ag-grid.com/dist/ag-grid.js?ignore=notused14"></script>
+    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css"> -->
+    <script src="~/Scripts/Grid/ui-grid.js"></script> -->
+<script type="text/javascript" src="~/Scripts/Grid/angular-drag-and-drop-lists.js"></script> -->
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.11.3.min.js" type="text/javascript"></script> -->
+    <script src="~/Scripts/jquery-ui-1.11.3.min.js" type="text/javascript"></script> --> -->
+   <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+   <!-- <!-- <!-- <link href="~/Content/icon-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/Slider/style2.css" /> 
+    <script type="text/javascript" src="~/Scripts/Slider/modernizr.custom.28468.js"></script>
+    <noscript> 
+    <link rel="stylesheet" type="text/css" href="~/Content/Slider/nojs.css" />
+    </noscript>
+    <script type="text/javascript" src="~/Scripts/Slider/jquery.cslider.js"></script>
+    <script type="text/javascript"> -->
+    
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>CMRC</title>
+        <meta name="description" content="CMRC apportal">
+        <link rel="stylesheet" href="main.css">
+    </head>
+	
+	CMRC.Component {
+
+  constructor() {
+    this.state = {
+      user: ‘’,
+      password: ‘’
+    };
+  }
+
+  
+  login(e) {
+    e.preventDefault();
+  // Here, we call an external cisco users. 
+      .catch(function(err) {
+        console.log(“Error logging in”, err);
+      });
+  }
+
+  render() {
+    return (
+        <form role=“CMRC”>
+        <div className=“form-group”>
+          <input type=“text” valueLink={this.linkState(‘user’)}placeholder=“Username” />
+          <input type=“password” valueLink={this.linkState(‘password’)} placeholder=“Password” />
+        </div>
+        <button type=“submit” onClick={this.login.bind(this)}>Submit</button>
+      </form>
+    </div>
+    );
+  }
+}
+
+
+  render: function () {
+ 			
+           <body>
+
+-			var cx = CMRC.addons.classSet;
+ 			var nowShowing = this.props.nowShowing;
+ 			return (
+ 				<footer className="footer">
+ @@ -35,23 +33,23 @@ var app = app || {};
+ <h2>
+                    Polaris</h2>
+                <p>
+                    Polaris Search is an application which integrate and facilitate all type of operation
+                    search. It purposes is to bring everything in a onetime search and provide operation
+                    information & useful link to external apps. It is built in a manner that individual
+                    user can customize search, views, links returned, create reports and promote them
+                    for other users to see them.</p>
+					  <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/polarisslide.png" alt="image01" /></div>
+            </div>
+ 						<li>
+ 							<a
+ 								href="#/"
+-								Polaris={cx({selected: nowShowing === app.CMRC})}>
++								Polaris={classNames({selected: nowShowing === app.CMRC})}>
+ 									All
+ 							</a>
+ 						</li>
+						<div class="da-slide">
+                <h2>
+                    Polaris Features</h2>
+                <p>
+                    Polaris is a set of Applications and reports developed on Polaris Application Platform
+                    utilizing Polaris Report Platform and Polaris Data Platform. Polaris enables development
+                    of new reports, new contents (such as blogs, discussion boards, training, working
+                    documents - example Dk/Df data, other engineering data), new analysis, or new applications
+                    by literally anyone. Polaris Data Platform enables access to data, information,
+                    and insights to Polaris Apps, Polaris Reports and Polaris Intelligent Product History.</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/developer.png" alt="image01" /></div>
+            </div>
+ 						{' '}
+ 						<li>
+ 							<a
+ 								href="#/active"
+-								Polarisfeature={cx({selected: nowShowing === app.CMRC})}>
++								Polarisfeature={classNames({selected: nowShowing === app.CMRC})}>
+ 									Active
+ 							</a>
+ 						</li>
+						 <div class="da-slide">
+                <h2>
+                    Knowledge Based Solution (KBS)</h2>
+                <p>
+                    Knowledge Based Solution (KBS) provides the search capabilities over text information
+                    like Failure Analysis (FA) cases notes, Services Request (SR) notes. KBS also support
+                    analytical capabilities to analyze FA data to identify root cause in FA process.
+                    Search for an FA case and see view of field history of Serial Number</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/kbsimage.png" alt="image01" /></div>
+            </div>
+ 						{' '}
+ 						<li>
+ 							<a
+ 								href="#/completed"
+-								KBS={cx({selected: nowShowing === app.CMRC})}>
++								KBS={classNames({selected: nowShowing === app.CMRC})}>
+ 									Completed
+ 							</a>
+ 						</li>return (
+-				<li className={React.addons.classSet({
++				<li className={classNames({
+ 					completed: this.props.todo.completed,
+ 					editing: this.props.editing
+ 				})}>
+               </footer>
+    </body>
+                
+                </html>

@@ -1,0 +1,251 @@
+﻿<div id="sidebar" class="col-xs-12">
+    <div class="sidebar-menu row" ng-hide="app.device.isSmallScreen() && (app.sidebar.isOpened && (app.areAppsShown || apps.notifications))">
+        <ul>
+            <li class="app-theme-background" ng-click="app.toggleSidebar()">
+                <div class="icon-container" title="Menu">
+                    <i class="icon icon-hamburger"></i>
+                    <span class="admin-title-bold">Menu</span>
+                </div>
+            </li>            
+            <li>
+                <div class="icon-container" ng-click="app.closeAllSideBars();app.goToHome();" title="Home">
+                    <i class="icon icon-home"></i>
+                    <span>Home</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.areAppsShown}" ng-click="app.showApps();" title="All Apps">
+                <div class="icon-container">
+                    <i class="icon icon-apps"></i>
+                    <span>All Apps</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.notifications}" ng-click="app.notificationClick();" title="Notifications">
+                <div class="icon-container">
+                    <i class="icon icon-notification"><span class="notification-count">{{unreadNotificationsCount}}</span></i>
+                    <span>Notifications</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.showFeeds}" ng-click="app.goToFeeds();" title="Feeds">
+                <div class="icon-container">
+                    <i class="icon icon-world-wire"></i>
+                    <span>Feeds</span>
+                </div>
+            </li>            
+            <li class="separator" ng-show="app.adminAccess.HasAdminAccess"></li>
+            <li ng-class="active">
+                <div class="icon-container" ng-click="app.toggleSidebar();">
+                    <i class="icon icon-users"></i>
+                    <span>I Want to...:</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.guidedhelp}" >
+                <div class="icon-container" ng-click="app.guidedHelpClick();" title="Guided Help">
+                    <img class="guided-help-icon">
+                     <span>Guided Help</span>
+                </div>
+            </li>
+            <li ng-class="active">
+                <div class="icon-container" ng-click="app.bladeclick('accountplanning');">
+                    <span>Update my account plans</span>
+                </div>
+            </li>
+            <li ng-class="active">
+                <div class="icon-container" >
+                    <span>Quota Retirement</span>
+                </div>
+            </li>
+            <li ng-class="active">
+                <div class="icon-container" ng-click="app.bladeclick('pipelinereview');">
+                    <span>Review my pipeline health</span>
+                </div>
+            </li>
+            <li ng-class="active">
+                <div class="icon-container" ng-click="app.bladeclick('maqlreview');">
+                    <span>Manage and Qualify Leads</span>
+                </div>
+            </li>
+            <li ng-class="active">
+                <div class="icon-container" ng-click="app.bladeclick('coaching');">
+                    <span>Coaching For Success</span>
+                </div>
+            </li>
+        </ul>
+        <ul ng-show="app.shared.isAdmin && app.adminAccess.HasAdminAccess" class="admin-nav-bar">
+            <li ng-class="{'active':app.getCurrentStateName() == 'profiles'}" ng-click="app.goToProfiles();" title="Profile Management">
+                <div class="icon-container">
+                    <i class="icon icon-glyph-1a6"></i>
+                    <span>Profiles</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.getCurrentStateName() == 'tiles'}" ng-click="app.goToTiles();" title="Tile  Management">
+                <div class="icon-container">
+                    <i class="icon icon-glyph-7c4"></i>
+                    <span>Tiles</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.getCurrentStateName() == 'groups'}" ng-click="app.goToGroups();" title="Group Management">
+                <div class="icon-container">
+                    <i class="icon icon-glyph-81e"></i>
+                    <span>Groups</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.getCurrentStateName() == 'profilecategories'}" ng-click="app.goToProfileCategories();" title="Profile Category Management">
+                <div class="icon-container">
+                    <i class="icon icon-contact-info"></i>
+                    <span>Profile Categories</span>
+                </div>
+            </li>
+            <li ng-class="{'active':app.getCurrentStateName() == 'users'}" ng-click="app.goToUsers();" title="User Management">
+                <div class="icon-container">
+                    <i class="icon icon-users"></i>
+                    <span>Users</span>
+                </div>
+            </li>
+        </ul>
+        <ul ng-show="app.shared.isAdmin && app.adminAccess.HasNotificationAccess" class="admin-nav-bar">
+            <li ng-class="{'active':app.showAdminNotification}" ng-click="app.goToSendNotification();" title="Compose Notification">
+                <div class="icon-container">
+                    <!--<i class="icon icon-notification"></i>-->
+                    <img src="/images/icon/Custom Notification_reg.png" class="icon" ng-if="!app.showAdminNotification" />
+                    <img src="/images/icon/Custom Notification_hover.png" class="icon" ng-if="app.showAdminNotification"/>
+                    <span>Send Notifications</span>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="bottom">
+            <li class="separator"></li>
+
+            <li class="enter-content">
+                <div class="icon-container icon-filled user-photo">
+                    <i ng-hide="thumbnailPhoto" class="icon icon-account-outline"></i>
+                    <img ng-csp ng-show="thumbnailPhoto" ng-src="data:image/jpeg;base64,{{thumbnailPhoto}}" />
+                    <div class="user-status-notifier" ng-if="app.device.isWindows()==true">
+                        <!-- Bind with isUserOnline-->
+                        <span class="status mar-lt-0" ng-class="{'available': isUserOnline, 'offline': !isUserOnline }">
+                            <i class="icon icon-accept2 bg-0" ng-show="isUserOnline"></i>
+                            <i class="icon icon-accept2 bg-0" ng-show="isUserOnline"></i>
+                        </span>
+
+                    </div>
+
+                </div>
+                <div class="user-details">
+                    <span class="profile-details" ng-class="{'forUWP' : userInfo.upn}">
+                        <span ng-cloak>{{ userInfo.upn }}</span><!--For UWP-->
+                        <span ng-cloak>{{ userInfo.userName }}</span><!--For web-->
+                    </span>
+                </div>
+            </li>
+             <!--li class="enter-content user">
+                <div class="user-details">
+                    <span class="profile-details">
+                        <span class="profile-category" ng-show="app.shared.profile.selectedprofilegroup.categoryname">{{app.shared.profile.selectedprofilegroup.categoryname}}</span>
+                        <span ng-cloak>{{app.shared.selectedprofile.displayname}}</span><!-- bind the profilename here --
+                    </span>
+                </div>
+            </li>-->
+            <li ng-class="{'active':app.showSettings}" ng-click="app.goToSettings();" title="Settings">
+                <div class="icon-container">
+                    <i class="icon icon-settings"></i>
+                    <span>Settings</span>
+                </div>
+            </li>
+        </ul>
+
+    </div>    
+    <div class="sidebar-apps" ng-show="(app.areAppsShown || app.notifications|| app.guidedhelp)" ng-class="{'overlay-mode' : !app.device.isSmallScreen()}">
+        <div class="row sidebar-back" ng-click="app.areAppsShown = false" ng-show="app.device.isSmallScreen()">
+            <div class="icon-container">
+                <i class="icon icon-back"></i>
+                <span>Back to Menu</span>
+            </div>
+        </div>
+        <div ng-if="app.isAllApps">
+        <div class="sidebar-header">
+            <div class="search-wrapper">
+                <input type="search" ng-model="app.shared.appSearchToken" ng-change="app.shared.appSearch()" placeholder="Search" ng-model-options="{debounce: 500}">
+                <i class="icon icon-search" ng-if="app.shared.appSearchToken == ''"></i>
+                <i class="icon icon-close clearIcon" ng-if="app.shared.appSearchToken != ''" ng-click="app.shared.clearSearchText()"></i>
+            </div>
+        </div>
+        <uib-tabset class="sidebar-tabs" justified="true">
+                <uib-tab ng-show="app.shared.appSearchToken == ''" ng-click="app.shared.allTabActive = true;app.shared.groupsTabActive = false;app.shared.processAllAppsList('',true,false)" active="app.shared.allTabActive == true">
+                <uib-tab-heading>
+                    <span>All</span>
+                </uib-tab-heading>
+            </uib-tab>
+                <uib-tab ng-show="app.shared.appSearchToken == ''" ng-click="app.shared.groupsTabActive = true;app.shared.allTabActive = false;app.shared.processAllAppsList('',true,true)" active="app.shared.groupsTabActive == true">
+                    <uib-tab-heading>
+                        <span>Groups</span>
+                    </uib-tab-heading>
+                </uib-tab>
+                <uib-tab ng-show="app.shared.appSearchToken != ''" active="app.shared.allTabActive == false;app.shared.groupsTabActive == false" ng-click="app.shared.allTabActive = false;app.shared.groupsTabActive = false">
+                <uib-tab-heading>
+                    <span style="text-transform:lowercase;font-style:italic">'{{app.shared.appSearchToken}}'</span>
+                </uib-tab-heading>
+            </uib-tab>
+        </uib-tabset>
+            <div id="applicationsList" ng-if="app.areAppsShown && (app.shared.allTabActive == true || app.shared.groupsTabActive == true)">
+            <win-semantic-zoom zoomed-out="app.isZoomedOut">
+                <win-list-view item-data-source="app.shared.allAppsProcessedList"
+                               tap-behaviour="'invokeOnly'"
+                               selection-mode="'none'"
+                               group-data-source="app.shared.allAppsProcessedList.groups"
+                               group-header-tap-behaviour="'invoke'"
+                               on-group-header-invoked="app.isZoomedOut = true; app.subMenuHidden = true;">
+                    <win-item-template>
+                        <div class="rowTemplate" ng-click="app.appClick(item.data)">
+                            <div class="roundcontainer" ng-style="{'background-color': item.data.TileColor }" style="width:42px;height:42px;display:inline-block;border-radius:50%;">
+                                <div class="image" style="background-size:50%;" ng-style="{'background-image': item.data.Icon}" ng-class="{ 'widget' : item.data.Type === 'Widget' }"></div>
+                            </div>
+                            <div class="meta">
+                                <div class="name">{{item.data.Name }}</div>
+                                    <div class="category">{{ app.shared.allTabActive ? item.data.Category : item.data.clickAction.appUri }}</div>
+                            </div>
+                        </div>
+                    </win-item-template>
+                        <win-group-header-template>
+                            <span ng-class="{'grouptabheader': app.shared.groupsTabActive}">{{item.key}}</span>
+                        </win-group-header-template>
+
+                    <win-list-layout></win-list-layout>
+                </win-list-view>
+                <win-list-view class="zoomed-out"
+                               tap-behaviour="'invokeOnly'"
+                               selection-mode="'none'"
+                               item-data-source="app.shared.allAppsProcessedList.groups"
+                               on-item-invoked="app.isZoomedOut = false">
+                    <win-item-template>
+                        <div class="zoom-header"> {{item.key}} </div>
+                    </win-item-template>
+                    <win-list-layout></win-list-layout>
+                </win-list-view>
+            </win-semantic-zoom>
+        </div>
+
+            <div id="applicationsList" ng-if="app.areAppsShown && app.shared.allTabActive == false && app.shared.groupsTabActive == false" class="searchBar">
+            <div class="rowTemplate" ng-click="app.appClick(item)" ng-repeat="item in app.shared.allAppsListing | filter : app.shared.appSearchToken">
+                <div class="roundcontainer" ng-style="{'background-color': item.TileColor }" style="width:42px;height:42px;display:inline-block;border-radius:50%;">
+                    <div class="image" style="background-size:50%;" ng-style="{'background-image': item.Icon}" ng-class="{ 'widget' : item.Type === 'Widget' }"></div>
+                </div>
+                    <div class="meta abs-pos">
+                    <div class="name">{{item.Name }}</div>
+                    <div class="category">{{ item.Category }}</div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!--
+            <div ng-if="!app.isAllApps">
+                <div ng-include="'/views/notificationsList.html'"></div>
+            </div>
+         -->
+        <div ng-if="app.notifications">
+            <div ng-include="'/views/notificationsList.html'"></div>
+        </div>
+        <div ng-if="app.guidedhelp">
+            <div ng-include="'/views/guidedhelp.html'"></div>
+        </div>
+    </div>
+</div>

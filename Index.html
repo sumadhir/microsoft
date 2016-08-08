@@ -1,0 +1,382 @@
+<html ng-app="CMRCAngularApp" ng-controller="HomePageController">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>CMRC Angular</title>
+    <!-- include bootstrap -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/Myapp.css" />
+    @* Including Scripts *@
+    <script src="~/Scripts/Angular/angular.min.js"></script>
+    <script src="~/Scripts/Angular/angular-route.min.js"></script>
+    <script src="~/Scripts/Angular/angular-touch.js"></script>
+    <script src="~/Scripts/Angular/angular-animate.js"></script>
+    <script src="node_modules/todomvc-common/base.js"></script>
+ 		<script src="node_modules/react/dist/react-with-addons.js"></script>
++		<script src="node_modules/classnames/index.js"></script>
+ 		<script src="node_modules/react/dist/JSXTransformer.js"></script>
+ 		<script src="node_modules/director/build/director.js"></script>
+    <script src="~/Scripts/Grid/csv.js"></script>
+    <script src="~/Scripts/Grid/vfs_fonts.js"></script>
+    <script src="http://www.ag-grid.com/dist/ag-grid.js?ignore=notused14"></script>
+    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+    <script type="text/javascript" src="~/Scripts/Grid/angular-drag-and-drop-lists.js" ></script>
+    @Styles.Render("~/Content/css")
+    <script src="~/Scripts/Grid/ui-grid.js"></script>
+    <script type="text/javascript" src="~/Scripts/Grid/angular-drag-and-drop-lists.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-ui-1.11.3.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    @Scripts.Render("~/bundles/AngularJsbundle")
+    <link href="~/Content/icon-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/Slider/style2.css" />
+    <script type="text/javascript" src="~/Scripts/Slider/modernizr.custom.28468.js"></script>
+    <noscript>
+        <link rel="stylesheet" type="text/css" href="~/Content/Slider/nojs.css" />
+    </noscript>
+    <script type="text/javascript" src="~/Scripts/Slider/jquery.cslider.js"></script>
+    <script type="text/javascript">
+        var myJsVar = '@System.Configuration.ConfigurationManager.AppSettings["showDropDown"]';
+        var searchVar = '@System.Configuration.ConfigurationManager.AppSettings["showHeaderSearch"]';
+    </script>
+    <script type="text/javascript">
+        $(function () {
+
+            $('#da-slider').cslider({
+                autoplay: true,
+                bgincrement: 450
+            });
+
+        });
+
+    </script>
+</head>
+<body class="bodyClass">
+    <!-Start Of Navigation Header -->
+    <nav class="navbar ng-scope">
+
+  <div class="container-fluid ng-scope" >
+    <!--<div class="navbar-header">
+      <a class="navbar-brand" href="#" style="margin-left:0px !important"  ng-click="homeUrl()">
+      <img src="~/Content/images/cesium_logo.png" style="float:left;margin-left:30px;margin-top:-5px">
+     
+      <label class="logoTitle" id="logoChange"></label>  </a>
+    </div>-->
+    <div class="navbar-header col-xs-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="headerlogo">
+      <span href="#" class="fi-cisco"></span></div>
+      <div>
+    <div ng-click="showSearchPage()" class="app-name" style="position: absolute;top: 7px;left: 90px;font-family: 'CiscoSansRegular', Arial;font-size: 1.5em">Cesium</div>
+    <div class="tagline-name" style="font-size: 0.8em;top: 32px;position: absolute;margin-left: 75px;">Connecting The Unconnected</div>
+    </div>
+    </div>
+  
+    <div class="col-md-4" style="margin-left: 19%;margin-top: 9px; width:31.33333%" >
+        <div class="input-group">
+            <div class="input-group-btn" ng-show="showDropDown == true">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-triangle-bottom"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="so in selectOptions">
+                        <span class="dropdownlist" ng-click="setSearch(so.options)" ng-class="{ 'activate': isActiveTab(so)}">
+                            {{so.description}}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <SearchText></SearchText>
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default" aria-label="Help" ng-click="search(true);statuschange();" style=" background-color: #eee">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+  
+    <div>
+     <div>
+        
+        <form class="navbar-form navbar-right ng-pristine ng-valid" role="search" style="padding-right:30px">
+        <div class="input-group" ng-show="userProfile != null">
+            <a style="color:white" id="authUsrname" popover-template="'popover.html'" popover-placement="bottom">{{userProfile}} {{lastname[0]}} ({{company.split(' ')[0] | uppercase}})</a>
+            <div id="logout" class="popover ng-isolate-scope bottom fade in" tooltip-animation-class="fade" tooltip-classes=""  popover-template-popup="" title="" content-exp="contentExp()" placement="bottom" popup-class="" animation="animation" origin-scope="origScope" style="top: 21px; left: 55px; display: block;">
+                <div class="arrow"></div>
+                <div class="popover-inner">
+                               
+                    <div class="popover-content" tooltip-template-transclude="contentExp()" tooltip-template-transclude-scope="originScope()">
+                            
+                        <div class="ng-scope">
+                            <a href="#/Settings" id="settings">Settings</a>  
+                        </div>
+                        <br />
+                        <div class="ng-scope">
+                            <a href="#/History">History</a>  
+                        </div>
+                        <br />
+                        <!--<div class="ng-scope">
+                            <a href="#/Usage">Usage</a>  
+                        </div>
+                        <br />-->
+                        <div class="ng-scope">
+                            <a ng-click="logout()">Log Out</a>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="input-group">
+            <a id="menuapps" class="headericons"  popover-template="'popover.html'" popover-placement="bottom"  popover-elem></a>                  
+        </div>
+        <div class="input-group headericons">
+            <span id="spnApps" style="color:white" popover-template="'appsList.html'" popover-placement="bottom" popover-elem="" class="fiext-grid"></span>
+                <div id="spnAppsop" class="popover ng-isolate-scope bottom fade in" style="top: 30px; left: -109px; width: 236px; display: block;">
+                    <div class="arrow"></div>
+                    <div class="popover-inner">
+                        <div class="popover-content" >    
+                        <a href="https://cesium.cisco.com/apps/cesium.html#apollo" style="color:#00bfff" class="ng-binding">
+                            <img src="~/Content/images/Machines.png" style="width:50;height:50px"/> Cesium Host Manager
+                        </a><br /><br />
+                        <a href="https://cesium.cisco.com/apps/cesium.html#locationmgr" style="color:#00bfff" class="ng-binding">
+                            <img src="~/Content/images/cloudMgr.png"  style="width:50;height:50px"/> Cesium Cloud Manager</a>         
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="input-group  headericons">
+            <span style="color:white" href="#" class="fi-ring"></span>
+        </div>
+        <div class="input-group headericons">
+            <span id="spnHelpList" class="fi-help"  popover-template="'helpList.html'" popover-elem popover-placement="bottom" href="#" ></span>
+            <div id="spnHelpListop" class="popover ng-isolate-scope bottom fade in" style="top: 30px; left: -70px; display: block;">
+                <div class="arrow"></div>
+                <div class="popover-inner">     
+                    <div class="popover-content" >
+                    <div id="divHelpList"  class="col-md-3 ng-scope" style="padding-top: 0.5em; color: black; padding-bottom: 0.5em; width: 250px;">
+                    <a href="https://rcdn9plone.cisco.com/documentation" style="color:#00bfff" target="_blank" class="ng-binding">
+                        Documentation
+                    </a>
+                    </div><br /><br />
+                    <div id="divHelpList"  class="col-md-3 ng-scope" style="padding-top: .5em;color:black;padding-bottom: .5em; width:250px">
+                    <a href="https://rcdn9plone.cisco.com/training" style="color:#00bfff" target="_blank" class="ng-binding">
+                        Training
+                    </a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+  </div>
+
+       </nav>
+    <div class="PolarisBanner" ng-click="homeUrl()">
+    </div>
+    <!--End Of Navigation Header -->
+    <div class="container-fluid demoMargin">
+        <div class="row" style="padding: 25px">
+            <div class="col-md-4" ng-show="(ParentObj.SearchType=='Middle Search' || ParentObj.SearchType=='Middle Search with Dropdown')&& !ParentObj.hideSearchBar">
+                <div class="input-group">
+                    <div class="input-group-btn" ng-show="showDropDown == true">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-triangle-bottom"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="so in selectOptions"><span class="dropdownlist" ng-click="setSearch(so.options)"
+                                ng-class="{ 'activate': isActiveTab(so)}">{{so.description}} </span></li>
+                        </ul>
+                    </div>
+                    <searchtext></searchtext>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default" aria-label="Help" ng-click="search(true);" id="animButton">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="ParentObj.ShowTabs" ng-class="{ 'col-md-3': isHavingLength(),'col-md-4': isHavingLength2(), 'col-md-5' : isHavingLength3() }">
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group" ng-show="ShowSerialNumberData">
+                        <button type="button" class="btn level-1-tab-secondary" style="border-radius: 0px !important"
+                            ng-class="{ 'activate': isActiveClass('S'), 'btn-def': !isActiveClass('S') }"
+                            ng-click="serialNumberSearch(true)">
+                            Serial Number
+                        </button>
+                    </div>
+                    <div class="btn-group" ng-show="ShowProductData">
+                        <button type="button" class="btn level-1-tab-secondary" style="border-radius: 0px !important"
+                            ng-class="{ 'activate': isActiveClass('P'), 'btn-def': !isActiveClass('P') }"
+                            ng-click="productDataSearch(true)">
+                            Product
+                        </button>
+                    </div>
+                    <div class="btn-group" ng-show="ShowMachineData">
+                        <button type="button" class="btn level-1-tab-secondary" style="border-radius: 0px !important"
+                            ng-class="{ 'activate': isActiveClass('M'), 'btn-def': !isActiveClass('M') }"
+                            ng-click="machineDataSearch(true)">
+                            Machine
+                        </button>
+                    </div>
+                    <div class="btn-group" ng-show="ShowDevSerialNumberData">
+                        <button type="button" class="btn level-1-tab-secondary" style="border-radius: 0px !important"
+                            ng-class="{ 'activate': isActiveClass('D'), 'btn-def': !isActiveClass('D') }"
+                            ng-click="serialNumberDevSearch(true)">
+                            Serial Number C*
+                        </button>
+                    </div>
+                    <div class="btn-group" ng-show="ShowLineIdData">
+                        <button type="button" class="btn level-1-tab-secondary" style="border-radius: 0px !important"
+                            ng-class="{ 'activate': isActiveClass('L'), 'btn-def': !isActiveClass('L') }"
+                            ng-click="lineDataSearch(true)">
+                            Line Id
+                        </button>
+                    </div>
+                    @*<div class="btn-group" ng-show="ShowMacData">
+                        <button type="button" class="btn level-1-tab-secondary" style="border-radius: 0px !important"
+                            ng-class="{ 'activate': isActiveClass('MAC'), 'btn-def': !isActiveClass('MAC') }"
+                            ng-click="macSearch(true)">
+                            MAC
+                        </button>
+                    </div>*@
+                </div>
+            </div>
+        </div>
+        <div id="startenddate" style="margin-right: 25px; float: right; border: 1px solid darkgreen;
+            margin-top: -1%; padding: 5px 5px 5px 5px; border-radius: 5px 5px 5px 5px;" ng-class="{ hideDateFilter : !dateFilter() || !ParentObj.ShowTabs}">
+            <span style="font-size: small; font-weight: bold;">
+                <label>
+                    StartDate :</label>
+                <input id="startDate" type="date" ng-model="startDate" style="width: 140px" />
+                <label>
+                    EndDate :
+                </label>
+                <input id="endDate" type="date" ng-model="endDate" style="width: 140px" />
+                <input id="submitDate" type="button" ng-click="getFilteredData()" value="GO" />
+            </span>
+        </div>
+        <div ng-class="{ hideDateFilter : !dateFilter() || !ParentObj.ShowTabs}">
+            <br />
+            <br />
+        </div>
+        <div class="searchEngine">
+            <div ng-show="ParentObj.ShowTabs">
+                <div id="example-one">
+                    <span ng-repeat="tab in tabs" style="text-align: center; padding-left: 5px; padding-right:8px"
+                        ng-class="{ current_page_item: isActive('/{{tab}}') }"><a class="tabs" href="#/{{tab}}?SI={{serialNumber | replacing}}&SearchIn={{ParentObj.Class}}">
+                            {{tab}} </a></span><span id='magic-line'></span>
+                </div>
+                <br />
+            </div>
+            <div ng-view class="bodycontent" ng-show="ParentObj.ShowView">
+            </div>
+        </div>
+        <div id="da-slider" class="da-slider" ng-show="ParentObj.slider==true">
+            <div class="da-slide">
+                <h2>
+                    Polaris</h2>
+                <p>
+                    Polaris Search is an application which integrate and facilitate all type of operation
+                    search. It purposes is to bring everything in a onetime search and provide operation
+                    information & useful link to external apps. It is built in a manner that individual
+                    user can customize search, views, links returned, create reports and promote them
+                    for other users to see them.</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/polarisslide.png" alt="image01" /></div>
+            </div>
+            <div class="da-slide">
+                <h2>
+                    Polaris Features</h2>
+                <p>
+                    Polaris is a set of Applications and reports developed on Polaris Application Platform
+                    utilizing Polaris Report Platform and Polaris Data Platform. Polaris enables development
+                    of new reports, new contents (such as blogs, discussion boards, training, working
+                    documents - example Dk/Df data, other engineering data), new analysis, or new applications
+                    by literally anyone. Polaris Data Platform enables access to data, information,
+                    and insights to Polaris Apps, Polaris Reports and Polaris Intelligent Product History.</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/developer.png" alt="image01" /></div>
+            </div>
+            <div class="da-slide">
+                <h2>
+                    Knowledge Based Solution (KBS)</h2>
+                <p>
+                    Knowledge Based Solution (KBS) provides the search capabilities over text information
+                    like Failure Analysis (FA) cases notes, Services Request (SR) notes. KBS also support
+                    analytical capabilities to analyze FA data to identify root cause in FA process.
+                    Search for an FA case and see view of field history of Serial Number</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/kbsimage.png" alt="image01" /></div>
+            </div>
+            <div class="da-slide">
+                <h2>
+                    Test Strategy Analytics (TSA)</h2>
+                <p>
+                    The dashboard provides the starting point for the test strategy developer to analyze
+                    all test, repair, component, and measurement data for all products, all test areas,
+                    and all time frames. A set of commonly required analyses such as first pass yield,
+                    defect and symptom paretos, defective rate trends, and test time trends are provided.</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/developer.png" alt="image01" /></div>
+            </div>
+            <div class="da-slide">
+                <h2>
+                    Software Quality Dashboard (SQD)</h2>
+                <p>
+                    Software Quality Metric Dashboard (SQD) provides consolidated view Level 1 metrics
+                    which include SWDPMH (Software Defects per Million Hours), URC (Universal Release
+                    Criteria) & iCFD (immediate Customer Found Defects). The capability provides current
+                    performance of these metrics quarter over quarter, month over month. Historically
+                    report metrics information is preserved for reference.</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/sqd.png" alt="image01" /></div>
+            </div>
+            <div class="da-slide">
+                <h2>
+                    On Board Failure Log (OBFL)</h2>
+                <p>
+                    Parser - Parse unstructured informaiton to tranform it into structured information
+                    leading. Extractor -Extract useful information from unstructured data and enable
+                    advanced decision making capability. e.g., read FA cases information from free text
+                    to identify specific cause of failure in the product.</p>
+                <div class="da-img">
+                    <img class="SliderImage" src="~/Content/images/Slider/obfl.png" alt="image01" /></div>
+            </div>
+            <nav class="da-arrows">
+					                <span class="da-arrows-prev"></span>
+					                <span class="da-arrows-next"></span>
+				                </nav>
+        </div>
+        <!--8 Grid System started --><div ng-show ="ParentObj.recentlyView">
+        <div class="col-md-11" style="border-top: solid 1px #bdbdbd; margin-top: 2%; margin-left: 2%">
+            <h3>
+                Recently Visited Applications</h3>
+        </div>
+        <div class="advancedDemo">
+            <div class="dropzone">
+                <div class="container-element box box-blue">
+                    <ul class="col-md-12" style="margin-top: 1%">
+                        <li class="col-md-3 marginBottom4px" ng-repeat="data in PolarisAppsResponsePayload | limitTo:limit">
+                            <div class="demo-content" ng-click="openLink(data.url)" style="background-image: url('{{data.image_path}}');
+                                background-size: 100% 83%;">
+                                <div class="gridTileHeader">
+                                    <div class="left">
+                                        {{data.apps_name}}
+                                    </div>
+                                    <div class="right">
+                                        <div style="margin-right:10px; cursor: hand;" ng-click="remove('Index',data)">x</div>
+                                    </div>
+                                </div>
+                                <div class="gridTileFooter">
+                                    Searches So Far:{{data.all_execution_count }}s</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div></div>
+    </div>
+</body>
+</html>
